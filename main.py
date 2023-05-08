@@ -1,9 +1,12 @@
+import os
 import shutil
 from uuid import uuid4 as _uuid4
 
+import numpy as np
+import torch
 from fastapi import FastAPI, UploadFile, File
-from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
 from retrieval import load_model, add_img, query_img
 
@@ -57,6 +60,14 @@ def img_query(file: UploadFile = File(...)):
 
 # 启动服务
 if __name__ == '__main__':
+    if not os.path.exists('data/gallery/'):
+        os.makedirs('data/gallery/')
+    if not os.path.exists('data/query/'):
+        os.makedirs('data/query/')
+    if not os.path.exists('gallery.npy'):
+        np.save("gallery.npy", torch.FloatTensor())
+    if not os.path.exists('path.npy'):
+        np.save("path.npy", np.array([]))
     model = load_model(use_gpu=True)
     import uvicorn
 
